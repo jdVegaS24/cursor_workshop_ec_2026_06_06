@@ -22,7 +22,7 @@ export function SignUpForm() {
         <p className="font-medium">Check your email</p>
         <p className="mt-2 text-muted-foreground">
           {state.message ??
-            "Confirm your email address, then sign in to start trading with fake money."}
+            "Confirm your email address, then sign in to browse markets with fake money."}
         </p>
         <Button asChild variant="outline" className="mt-4 w-full">
           <Link href="/auth/sign-in">Back to sign in</Link>

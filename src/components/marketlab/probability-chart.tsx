@@ -49,25 +49,24 @@ export function ProbabilityChart({
   const chartHeight = height - PADDING.top - PADDING.bottom;
 
   return (
-    <section className="rounded-xl border border-border bg-card p-6 shadow-sm">
+    <div>
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h2 className="text-lg font-semibold">Yes probability</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {isFlatFallback
-              ? "Current market balance — no trading history yet."
-              : "Historical Yes chance from market ledger activity."}
-          </p>
-        </div>
-        <p className="text-2xl font-semibold text-chart-1">{yesChance}%</p>
+        <p className="text-sm text-muted-foreground">
+          {isFlatFallback
+            ? "Current market balance — no trading history yet."
+            : "Historical Yes chance from market ledger activity."}
+        </p>
+        <p className="text-2xl font-semibold text-emerald-700 dark:text-emerald-300">
+          {yesChance}%
+        </p>
       </div>
 
-      <div className="mt-6 overflow-x-auto">
+      <div className="mt-4 overflow-x-auto rounded-xl border border-border/70 bg-muted/20 p-2">
         <svg
           viewBox={`0 0 ${width} ${height}`}
           role="img"
           aria-label={`Yes probability chart at ${yesChance} percent`}
-          className="h-auto w-full min-w-[280px] text-chart-1"
+          className="h-auto w-full min-w-[280px] text-emerald-600 dark:text-emerald-400"
         >
           <title>Yes probability chart</title>
           {[0, 25, 50, 75, 100].map((tick) => {
@@ -103,6 +102,6 @@ export function ProbabilityChart({
           />
         </svg>
       </div>
-    </section>
+    </div>
   );
 }

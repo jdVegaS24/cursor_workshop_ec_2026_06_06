@@ -1,10 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Header } from "@/components/marketlab/header";
+
+import { FakeMoneyNote } from "@/components/marketlab/fake-money-note";
 import { MarketBuySection } from "@/components/marketlab/market-buy-section";
 import { MarketInfoCard } from "@/components/marketlab/market-info-card";
 import { MarketOutcomes } from "@/components/marketlab/market-outcomes";
+import { PageShell } from "@/components/marketlab/page-shell";
 import { ProbabilityChartSection } from "@/components/marketlab/probability-chart-section";
+import { SurfaceCard } from "@/components/marketlab/surface-card";
 import {
   getMarketById,
   tryGetMarketLedgerEntries,
@@ -28,14 +31,14 @@ export default async function MarketDetailPage({
     }
 
     return (
-      <div className="min-h-svh bg-background text-foreground">
-        <Header />
-        <main className="mx-auto max-w-6xl px-4 py-8">
-          <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-6 text-sm text-destructive">
-            {result.message}
-          </div>
-        </main>
-      </div>
+      <PageShell>
+        <div
+          className="rounded-2xl border border-destructive/30 bg-destructive/5 p-6 text-sm text-destructive"
+          role="alert"
+        >
+          {result.message}
+        </div>
+      </PageShell>
     );
   }
 
@@ -50,25 +53,39 @@ export default async function MarketDetailPage({
   });
 
   return (
-    <div className="min-h-svh bg-background text-foreground">
-      <Header />
-      <main className="mx-auto max-w-6xl space-y-6 px-4 py-8">
-        <Link
-          href="/markets"
-          className="inline-flex text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-        >
-          ← Back to markets
-        </Link>
+    <PageShell mainClassName="space-y-6">
+      <Link
+        href="/markets"
+        className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <span aria-hidden="true">←</span> Back to markets
+      </Link>
 
-        <MarketInfoCard market={market} />
-        <MarketOutcomes yesChance={yesChance} />
-        <ProbabilityChartSection
-          points={points}
-          yesChance={yesChance}
-          isFlatFallback={isFlatFallback}
-        />
-        <MarketBuySection market={market} />
-      </main>
-    </div>
+      <FakeMoneyNote />
+
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
+        <div className="space-y-6">
+          <MarketInfoCard market={market} />
+          <MarketOutcomes yesChance={yesChance} />
+          <SurfaceCard className="p-6">
+            <div className="mb-4 space-y-1">
+              <h2 className="text-lg font-semibold">Yes chance over time</h2>
+              <p className="text-sm text-muted-foreground">
+                Simple workshop chart based on available market activity.
+              </p>
+            </div>
+            <ProbabilityChartSection
+              points={points}
+              yesChance={yesChance}
+              isFlatFallback={isFlatFallback}
+            />
+          </SurfaceCard>
+        </div>
+
+        <div className="lg:sticky lg:top-28">
+          <MarketBuySection market={market} />
+        </div>
+      </div>
+    </PageShell>
   );
 }

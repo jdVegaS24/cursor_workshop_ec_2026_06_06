@@ -1,54 +1,58 @@
 import Link from "next/link";
 
-import { Header } from "@/components/marketlab/header";
+import { FakeMoneyChips } from "@/components/marketlab/fake-money-chips";
+import { PageHeader } from "@/components/marketlab/page-header";
+import { PageShell } from "@/components/marketlab/page-shell";
 import { PositionCard } from "@/components/marketlab/position-card";
 import { PositionsEmptyState } from "@/components/marketlab/positions-empty-state";
+import { PositionsSummaryRow } from "@/components/marketlab/positions-summary-row";
+import { SurfaceCard } from "@/components/marketlab/surface-card";
 import { Button } from "@/components/ui/button";
 import { getAuthState } from "@/lib/auth/queries";
 import { getUserPositions } from "@/lib/positions/queries";
+import { summarizePositions } from "@/lib/positions/summary";
 
 export default async function PositionsPage() {
   const auth = await getAuthState();
   const positions = auth.user ? await getUserPositions() : [];
+  const summary = summarizePositions(positions);
 
   return (
-    <div className="min-h-svh bg-background text-foreground">
-      <Header />
-      <main className="mx-auto max-w-6xl px-4 py-8">
-        <div className="mb-8 space-y-2">
-          <h1 className="text-3xl font-semibold tracking-tight">
-            My Positions
-          </h1>
-          <p className="max-w-2xl text-muted-foreground">
-            Markets where you hold fake-money Yes or No shares.
-          </p>
-        </div>
+    <PageShell>
+      <PageHeader
+        title="My Positions"
+        description="Spend fake cents to collect Yes or No shares."
+      >
+        <FakeMoneyChips />
+      </PageHeader>
 
-        {!auth.user ? (
-          <div className="rounded-xl border border-border bg-card p-6 text-center shadow-sm">
-            <h2 className="text-lg font-semibold">Sign in required</h2>
-            <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-              Sign in to view your private fake-money positions.
-            </p>
-            <div className="mt-5 flex flex-wrap justify-center gap-3">
-              <Button asChild size="sm">
-                <Link href="/auth/sign-in">Sign in</Link>
-              </Button>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/auth/sign-up">Sign up</Link>
-              </Button>
-            </div>
+      {!auth.user ? (
+        <SurfaceCard className="p-8 text-center">
+          <h2 className="text-lg font-semibold">Sign in required</h2>
+          <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+            Sign in to view your private fake-money positions.
+          </p>
+          <div className="mt-5 flex flex-wrap justify-center gap-3">
+            <Button asChild size="sm">
+              <Link href="/auth/sign-in">Sign in</Link>
+            </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link href="/auth/sign-up">Sign up</Link>
+            </Button>
           </div>
-        ) : positions.length === 0 ? (
-          <PositionsEmptyState />
-        ) : (
-          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        </SurfaceCard>
+      ) : positions.length === 0 ? (
+        <PositionsEmptyState />
+      ) : (
+        <div className="space-y-6">
+          <PositionsSummaryRow summary={summary} />
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {positions.map((position) => (
               <PositionCard key={position.id} position={position} />
             ))}
           </div>
-        )}
-      </main>
-    </div>
+        </div>
+      )}
+    </PageShell>
   );
 }
