@@ -1,0 +1,21 @@
+import type { MarketStatus } from "@/lib/markets/types";
+
+const STATUS_LABELS: Record<MarketStatus, string> = {
+  open: "Open",
+  closed: "Closed",
+  resolved: "Resolved",
+};
+
+export function formatMarketStatus(status: string): string {
+  if (status in STATUS_LABELS) {
+    return STATUS_LABELS[status as MarketStatus];
+  }
+  return status;
+}
+
+export function formatCloseDate(closeDate: string): string {
+  return new Intl.DateTimeFormat("en-US", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(closeDate));
+}
